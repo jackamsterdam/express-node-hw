@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>api post hw</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="#">
+</head>
+
+<body>
+
+    <label for="id">id</label>
+    <input type="text" id="id" name="id">
+
+    <label for="firstName">firstName</label>
+    <input type="text" id="firstName" name="firstName">
+
+    <label for="lastName">lastName</label>
+    <input type="text" id="lastName" name="lastName">
+
+    <button type="button" id="getPerson">Get Person</button>
+
+
+    <div class="inject"></div>
+
+    <script>
+        let btn
+
+        let id, firstName, lastName
+        let inject
+
+        document.onreadystatechange = () => {
+            if (document.readyState === 'complete') {
+                onInit()
+            }
+        }
+
+        function onInit() {
+            id = document.querySelector('#id')
+            firstName = document.querySelector('#firstName')
+            lastName = document.querySelector('#lastName')
+            inject = document.querySelector('.inject')
+
+
+            btn = document.querySelector('#getPerson')
+            btn.addEventListener('click', getPerson.bind({
+                    id,
+                    firstName,
+                    lastName
+                }))
+                // btn.addEventListener('click', getPerson)
+
+        }
+
+        function getPerson() {
+            console.log('this', this)
+            console.log('this.id', this.id)
+            console.log('this.id.value', this.id.value)
+            console.log('this.firstName', this.firstName)
+            console.log('this.firstName.value', this.firstName.value)
+            console.log('this.lastName', this.lastName)
+            console.log('this.lastName.value', this.lastName.value)
+
+            // debugger
+
+            fetch('http://localhost:3000/persons', {
+                    method: 'POST',
+                    // body: JSON.stringify((this.id, this.firstName, this.lastName)),
+                    body: JSON.stringify({
+                        id: this.id.value,
+                        firstName: this.firstName.value,
+                        lastName: this.lastName.value
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then((response) => {
+                    // debugger
+                    return response.json()
+                })
+                .then(({
+                    msg
+                }) => {
+                    //call some function with this data.
+                    // debugger
+                    inject.innerHTML = msg
+                    console.log('this came from the server' + msg)
+                })
+
+
+        }
+    </script>
+
+</body>
+
+</html>
